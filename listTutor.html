@@ -1,0 +1,219 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh sách Gia sư</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 90%;
+            margin: 20px auto;
+        }
+        .filter-section {
+            background-color: #f4f4f9;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .filter-section select, .filter-section input[type="text"] {
+            padding: 10px;
+            border-radius: 5px;
+            width: 22%;
+        }
+        .tutor-list {
+            display: flex;
+            flex-direction: column;
+        }
+        .tutor {
+            display: flex;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .tutor-info {
+            width: 65%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .tutor-video {
+            width: 35%;
+            background-color: #000;
+        }
+        .avatar {
+            float: left;
+            margin-right: 15px;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+        }
+        .tutor-name {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .tutor-details {
+            margin-bottom: 10px;
+        }
+        .actions {
+            margin-top: 10px;
+        }
+        .actions button {
+            margin-right: 10px;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #007BFF;
+            color: white;
+        }
+        .availability {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Bộ lọc -->
+        <div class="filter-section">
+            <select>
+                <option value="">Lịch/Khung giờ có thể học</option>
+                <option value="morning">Buổi sáng</option>
+                <option value="afternoon">Buổi chiều</option>
+                <option value="evening">Buổi tối</option>
+            </select>
+            <select>
+                <option value="">Phương thức học</option>
+                <option value="online">Online</option>
+                <option value="offline">Offline</option>
+                <option value="hybrid">Kết hợp</option>
+            </select>
+            <select>
+                <option value="">Khu vực địa lý</option>
+                <option value="hanoi">Hà Nội</option>
+                <option value="hochiminh">TP. Hồ Chí Minh</option>
+                <option value="danang">Đà Nẵng</option>
+            </select>
+            <select>
+                <option value="">Chương trình muốn học</option>
+                <option value="sat">SAT</option>
+                <option value="ielts">IELTS</option>
+                <option value="cambridge">Cambridge</option>
+            </select>
+            <select>
+                <option value="">HS đang học lớp</option>
+                <option value="10">Lớp 10</option>
+                <option value="11">Lớp 11</option>
+                <option value="12">Lớp 12</option>
+            </select>
+            <select>
+                <option value="">Môn học đăng ký</option>
+                <option value="math">Toán</option>
+                <option value="english">Tiếng Anh</option>
+                <option value="physics">Vật lý</option>
+            </select>
+            <select>
+                <option value="">Trình độ học sinh</option>
+                <option value="basic">Cơ bản</option>
+                <option value="intermediate">Nâng cao</option>
+                <option value="advanced">Chuyên sâu</option>
+            </select>
+            <select>
+                <option value="">Yêu cầu, tiêu chí khác</option>
+                <option value="study-abroad">Tư vấn du học</option>
+                <option value="academic-advice">Tư vấn học đường</option>
+            </select>
+            <input type="text" placeholder="Nhập hashtag (e.g. nhút nhát, ít nói)">
+        </div>
+
+        <!-- Danh sách gia sư -->
+        <div class="tutor-list">
+            <div class="tutor">
+                <div class="tutor-info">
+                    <img src="/api/placeholder/80/80" alt="avatar" class="avatar">
+                    <div class="tutor-name">Nguyễn Văn A</div>
+                    <div class="tutor-details">
+                        Quốc tịch: Việt Nam<br>
+                        Đánh giá trung bình: 4.5<br>
+                        Số lượng học sinh đã dạy: 50<br>
+                        Số lượng tiết học đã học: 200<br>
+                        Bằng cấp: TESOL, IELTS 8.0
+                    </div>
+                    <div class="actions">
+                        <button>Yêu cầu học thử</button>
+                        <button>Gửi tin nhắn</button>
+                    </div>
+                    <div class="availability">
+                        Khung giờ trống: 9:00-11:00, 14:00-16:00
+                    </div>
+                </div>
+                <div class="tutor-video">
+                    <iframe width="100%" height="100%" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="tutor">
+                <div class="tutor-info">
+                    <img src="/api/placeholder/80/80" alt="avatar" class="avatar">
+                    <div class="tutor-name">Trần Thị B</div>
+                    <div class="tutor-details">
+                        Quốc tịch: Mỹ<br>
+                        Đánh giá trung bình: 4.8<br>
+                        Số lượng học sinh đã dạy: 100<br>
+                        Số lượng tiết học đã học: 500<br>
+                        Bằng cấp: CELTA, TOEFL 110
+                    </div>
+                    <div class="actions">
+                        <button>Yêu cầu học thử</button>
+                        <button>Gửi tin nhắn</button>
+                    </div>
+                    <div class="availability">
+                        Khung giờ trống: 10:00-12:00, 15:00-17:00
+                    </div>
+                </div>
+                <div class="tutor-video">
+                    <iframe width="100%" height="100%" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="tutor">
+                <div class="tutor-info">
+                    <img src="/api/placeholder/80/80" alt="avatar" class="avatar">
+                    <div class="tutor-name">Lê Văn C</div>
+                    <div class="tutor-details">
+                        Quốc tịch: Úc<br>
+                        Đánh giá trung bình: 4.6<br>
+                        Số lượng học sinh đã dạy: 75<br>
+                        Số lượng tiết học đã học: 300<br>
+                        Bằng cấp: TKT, IELTS 7.5
+                    </div>
+                    <div class="actions">
+                        <button>Yêu cầu học thử</button>
+                        <button>Gửi tin nhắn</button>
+                    </div>
+                    <div class="availability">
+                        Khung giờ trống: 8:00-10:00, 13:00-15:00
+                    </div>
+                </div>
+                <div class="tutor-video">
+                    <iframe width="100%" height="100%" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

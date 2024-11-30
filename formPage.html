@@ -1,0 +1,68 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khảo sát Trắc nghiệm - Câu hỏi 1</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            display: flex;
+        }
+        .image-section {
+            width: 50%;
+            background: url('/api/placeholder/400/600') no-repeat center center;
+            background-size: cover;
+        }
+        .question-section {
+            width: 50%;
+            padding: 30px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .question {
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .answers {
+            list-style: none;
+            padding: 0;
+        }
+        .answers li {
+            margin-bottom: 10px;
+        }
+        .answers li button {
+            padding: 10px 20px;
+            font-size: 18px;
+            width: 100%;
+            cursor: pointer;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Câu hỏi 1 -->
+    <div class="image-section"></div>
+    <div class="question-section">
+        <div class="question">Trình độ Tiếng Anh của bạn đang ở mức nào?</div>
+        <ul class="answers">
+            <li><button>A. Beginner</button></li>
+            <li><button>B. Intermediate</button></li>
+            <li><button>C. Advance</button></li>
+            <li><button>D. Super</button></li>
+        </ul>
+    </div>
+
+</body>
+</html>
