@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Hồ sơ Phụ huynh</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        .profile-section {
+            margin: 20px 0;
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"], input[type="email"], input[type="date"], input[type="file"], select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .child-info {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .study-history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .study-history-table th {
+            text-align: left;
+            font-size: 16px;
+            padding-top: 10px;
+        }
+
+        .study-history-table td {
+            padding: 5px;
+            vertical-align: top;
+        }
+
+        .study-time {
+            width: 20%;
+            white-space: nowrap;
+        }
+
+        .study-detail {
+            width: 50%;
+        }
+
+        .study-hours {
+            width: 30%;
+        }
+
+        .dialog {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            background-color: white;
+            border: 1px solid #ccc;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .dialog input {
+            width: 100%;
+        }
+
+        .dialog-close {
+            float: right;
+            cursor: pointer;
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Quản lý Hồ sơ Phụ huynh</h2>
+
+        <!-- Basic Information Section -->
+        <div class="profile-section" id="basic-info">
+            <h3>Thông tin cơ bản</h3>
+            <label for="parent-name">Họ và tên:</label>
+            <input type="text" id="parent-name" value="Nguyễn Văn A" readonly>
+            
+            <label for="email">Email:</label>
+            <input type="email" id="email" value="nguyenvana@example.com" readonly>
+            
+            <label for="phone">Số điện thoại:</label>
+            <input type="text" id="phone" value="0123456789" readonly>
+            
+            <label for="dob">Ngày sinh:</label>
+            <input type="date" id="dob" value="1980-01-01" readonly>
+        </div>
+
+        <!-- Children Management Section -->
+        <div class="profile-section" id="children-management">
+            <h3>Quản lý Con</h3>
+            <button onclick="showAddChildDialog()">Thêm con</button>
+            <div id="children-list">
+                <!-- Sample data for two children -->
+                <div class="child-info" data-id="1">
+                    <h4>Nguyễn Văn B <button onclick="removeChild(this)">Xóa</button> <button onclick="showEditChildDialog(this)">Chỉnh sửa</button></h4>
+                    <p>Ngày sinh: 2010-03-15</p>
+                    <p>Email: vanb@example.com</p>
+                    <p>Số điện thoại: 0912345678</p>
+                    <div class="study-history">
+                        <h5>Lịch sử học tập</h5>
+                        <table class="study-history-table">
+                            <tr><th colspan="3">2022</th></tr>
+                            <tr>
+                                <td class="study-time">01/2022 - 06/2022</td>
+                                <td class="study-detail">
+                                    <strong>Toán</strong><br>Nguyễn Văn C
+                                </td>
+                                <td class="study-hours">50 tiếng</td>
+                            </tr>
+                            <tr>
+                                <td class="study-time">07/2022 - 12/2022</td>
+                                <td class="study-detail">
+                                    <strong>Lý</strong><br>Trần Văn D
+                                </td>
+                                <td class="study-hours">40 tiếng</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="child-info" data-id="2">
+                    <h4>Nguyễn Thị D <button onclick="removeChild(this)">Xóa</button> <button onclick="showEditChildDialog(this)">Chỉnh sửa</button></h4>
+                    <p>Ngày sinh: 2012-09-20</p>
+                    <p>Email: thid@example.com</p>
+                    <p>Số điện thoại: 0987654321</p>
+                    <div class="study-history">
+                        <h5>Lịch sử học tập</h5>
+                        <table class="study-history-table">
+                            <tr><th colspan="3">2022</th></tr>
+                            <tr>
+                                <td class="study-time">02/2022 - 08/2022</td>
+                                <td class="study-detail">
+                                    <strong>Anh</strong><br>Phạm Thị E
+                                </td>
+                                <td class="study-hours">60 tiếng</td>
+                            </tr>
+                            <tr>
+                                <td class="study-time">09/2022 - 12/2022</td>
+                                <td class="study-detail">
+                                    <strong>Văn</strong><br>Nguyễn Văn F
+                                </td>
+                                <td class="study-hours">30 tiếng</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Child Dialog -->
+    <div class="dialog" id="add-child-dialog">
+        <span class="dialog-close" onclick="closeAddChildDialog()">X</span>
+        <p>Thêm thông tin con</p>
+        <input type="text" id="child-name-input" placeholder="Tên con" />
+        <input type="date" id="child-dob-input" placeholder="Ngày sinh" />
+        <input type="email" id="child-email-input" placeholder="Email (tuỳ chọn)" />
+        <input type="text" id="child-phone-input" placeholder="Số điện thoại (tuỳ chọn)" />
+        <button onclick="addChild()">Lưu</button>
+    </div>
+
+    <!-- Edit Child Dialog -->
+    <div class="dialog" id="edit-child-dialog">
+        <span class="dialog-close" onclick="closeEditChildDialog()">X</span>
+        <p>Chỉnh sửa thông tin con</p>
+        <input type="text" id="edit-child-name-input" placeholder="Tên con" readonly />
+        <input type="date" id="edit-child-dob-input" placeholder="Ngày sinh" readonly />
+        <input type="email" id="edit-child-email-input" placeholder="Email" />
+        <input type="text" id="edit-child-phone-input" placeholder="Số điện thoại" />
+        <button onclick="saveChildChanges()">Lưu thay đổi</button>
+    </div>
+
+    <script>
+        let childIdCounter = 3; // Track child ID for each new addition
+
+        function showAddChildDialog() {
+            document.getElementById('add-child-dialog').style.display = 'block';
+        }
+
+        function closeAddChildDialog() {
+            document.getElementById('add-child-dialog').style.display = 'none';
+        }
+
+        function addChild() {
+            const name = document.getElementById('child-name-input').value;
+            const dob = document.getElementById('child-dob-input').value;
+            const email = document.getElementById('child-email-input').value;
+            const phone = document.getElementById('child-phone-input').value;
+
+            if (name && dob) {
+                const childDiv = document.createElement('div');
+                childDiv.className = 'child-info';
+                childDiv.setAttribute('data-id', childIdCounter++);
+                childDiv.innerHTML = `
+                    <h4>${name} <button onclick="removeChild(this)">Xóa</button> <button onclick="showEditChildDialog(this)">Chỉnh sửa</button></h4>
+                    <p>Ngày sinh: ${dob}</p>
+                    ${email ? `<p>Email: ${email}</p>` : ''}
+                    ${phone ? `<p>Số điện thoại: ${phone}</p>` : ''}
+                    <div class="study-history">
+                        <h5>Lịch sử học tập</h5>
+                        <table class="study-history-table"></table>
+                    </div>
+                `;
+                document.getElementById('children-list').appendChild(childDiv);
+                closeAddChildDialog();
+                document.getElementById('child-name-input').value = '';
+                document.getElementById('child-dob-input').value = '';
+                document.getElementById('child-email-input').value = '';
+                document.getElementById('child-phone-input').value = '';
+            }
+        }
+
+        function removeChild(button) {
+            const childDiv = button.parentElement.parentElement;
+            document.getElementById('children-list').removeChild(childDiv);
+        }
+
+        function showEditChildDialog(button) {
+            const childDiv = button.parentElement.parentElement;
+            const name = childDiv.querySelector('h4').innerText.split(' ')[0];
+            const dob = childDiv.querySelector('p:nth-child(2)').innerText.split(': ')[1];
+            const emailElem = childDiv.querySelector('p:nth-child(3)');
+            const email = emailElem ? emailElem.innerText.split(': ')[1] : '';
+            const phoneElem = childDiv.querySelector('p:nth-child(4)');
+            const phone = phoneElem ? phoneElem.innerText.split(': ')[1] : '';
+
+            document.getElementById('edit-child-name-input').value = name;
+            document.getElementById('edit-child-dob-input').value = dob;
+            document.getElementById('edit-child-email-input').value = email;
+            document.getElementById('edit-child-phone-input').value = phone;
+
+            document.getElementById('edit-child-dialog').setAttribute('data-id', childDiv.getAttribute('data-id'));
+            document.getElementById('edit-child-dialog').style.display = 'block';
+        }
+
+        function closeEditChildDialog() {
+            document.getElementById('edit-child-dialog').style.display = 'none';
+        }
+
+        function saveChildChanges() {
+            const id = document.getElementById('edit-child-dialog').getAttribute('data-id');
+            const email = document.getElementById('edit-child-email-input').value;
+            const phone = document.getElementById('edit-child-phone-input').value;
+
+            const childDiv = document.querySelector(`.child-info[data-id='${id}']`);
+            if (childDiv) {
+                if (email) {
+                    const emailElem = childDiv.querySelector('p:nth-child(3)');
+                    if (emailElem) {
+                        emailElem.innerText = `Email: ${email}`;
+                    } else {
+                        const newEmailElem = document.createElement('p');
+                        newEmailElem.innerText = `Email: ${email}`;
+                        childDiv.insertBefore(newEmailElem, childDiv.querySelector('.study-history'));
+                    }
+                }
+                if (phone) {
+                    const phoneElem = childDiv.querySelector('p:nth-child(4)');
+                    if (phoneElem) {
+                        phoneElem.innerText = `Số điện thoại: ${phone}`;
+                    } else {
+                        const newPhoneElem = document.createElement('p');
+                        newPhoneElem.innerText = `Số điện thoại: ${phone}`;
+                        childDiv.insertBefore(newPhoneElem, childDiv.querySelector('.study-history'));
+                    }
+                }
+            }
+            closeEditChildDialog();
+        }
+    </script>
+</body>
+</html>

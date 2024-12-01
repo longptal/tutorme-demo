@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Hồ sơ Học sinh</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        .profile-section {
+            margin: 20px 0;
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"], input[type="email"], input[type="date"], select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .study-history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .study-history-table th {
+            text-align: left;
+            font-size: 16px;
+            padding-top: 10px;
+        }
+
+        .study-history-table td {
+            padding: 5px;
+            vertical-align: top;
+        }
+
+        .study-time {
+            width: 20%;
+            white-space: nowrap;
+        }
+
+        .study-detail {
+            width: 50%;
+        }
+
+        .study-hours {
+            width: 30%;
+        }
+
+        .parent-info {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .dialog {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            background-color: white;
+            border: 1px solid #ccc;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .dialog input, .dialog select {
+            width: 100%;
+        }
+
+        .dialog-close {
+            float: right;
+            cursor: pointer;
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Quản lý Hồ sơ Học sinh</h2>
+
+        <!-- Basic Information Section -->
+        <div class="profile-section" id="student-info">
+            <h3>Thông tin Học sinh</h3>
+            <label for="student-name">Họ và tên:</label>
+            <input type="text" id="student-name" value="Nguyễn Văn C" readonly>
+            
+            <label for="student-dob">Ngày sinh:</label>
+            <input type="date" id="student-dob" value="2010-05-15" readonly>
+            
+            <label for="student-email">Email:</label>
+            <input type="email" id="student-email" value="nguyenvanc@example.com" readonly>
+            
+            <label for="student-phone">Số điện thoại:</label>
+            <input type="text" id="student-phone" value="0912345678" readonly>
+        </div>
+
+        <!-- Study History Section -->
+        <div class="profile-section" id="study-history">
+            <h3>Lịch sử Học tập</h3>
+            <table class="study-history-table">
+                <tr><th colspan="3">2022</th></tr>
+                <tr>
+                    <td class="study-time">01/2022 - 06/2022</td>
+                    <td class="study-detail">
+                        <strong>Toán</strong><br>Nguyễn Văn A
+                    </td>
+                    <td class="study-hours">50 tiếng</td>
+                </tr>
+                <tr>
+                    <td class="study-time">07/2022 - 12/2022</td>
+                    <td class="study-detail">
+                        <strong>Lý</strong><br>Trần Văn B
+                    </td>
+                    <td class="study-hours">40 tiếng</td>
+                </tr>
+                <!-- Additional rows can be added here -->
+            </table>
+        </div>
+
+        <!-- Parent Management Section -->
+        <div class="profile-section" id="parent-management">
+            <h3>Thông tin Phụ huynh</h3>
+            <button onclick="showAddParentDialog()">Thêm phụ huynh</button>
+            <div id="parent-list">
+                <!-- Parent profiles will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Parent Dialog -->
+    <div class="dialog" id="add-parent-dialog">
+        <span class="dialog-close" onclick="closeAddParentDialog()">X</span>
+        <p>Thêm thông tin phụ huynh</p>
+        <label for="parent-role">Vai trò:</label>
+        <select id="parent-role" onchange="toggleCustomRoleInput('add')">
+            <option value="Cha">Cha</option>
+            <option value="Mẹ">Mẹ</option>
+            <option value="Ông">Ông</option>
+            <option value="Bà">Bà</option>
+            <option value="Khác">Khác</option>
+        </select>
+        <input type="text" id="custom-role-input-add" placeholder="Nhập vai trò cụ thể" style="display:none;" />
+        
+        <label for="parent-name">Tên phụ huynh:</label>
+        <input type="text" id="parent-name-input" placeholder="Tên phụ huynh" />
+        
+        <label for="parent-phone">Số điện thoại:</label>
+        <input type="text" id="parent-phone-input" placeholder="Số điện thoại" />
+        
+        <label for="parent-email">Email:</label>
+        <input type="email" id="parent-email-input" placeholder="Email" required />
+        
+        <button onclick="addParent()">Lưu</button>
+    </div>
+
+    <!-- Edit Parent Dialog -->
+    <div class="dialog" id="edit-parent-dialog">
+        <span class="dialog-close" onclick="closeEditParentDialog()">X</span>
+        <p>Chỉnh sửa thông tin phụ huynh</p>
+        <label for="edit-parent-role">Vai trò:</label>
+        <select id="edit-parent-role" onchange="toggleCustomRoleInput('edit')">
+            <option value="Cha">Cha</option>
+            <option value="Mẹ">Mẹ</option>
+            <option value="Ông">Ông</option>
+            <option value="Bà">Bà</option>
+            <option value="Khác">Khác</option>
+        </select>
+        <input type="text" id="custom-role-input-edit" placeholder="Nhập vai trò cụ thể" style="display:none;" />
+        
+        <label for="edit-parent-name">Tên phụ huynh:</label>
+        <input type="text" id="edit-parent-name-input" placeholder="Tên phụ huynh" />
+        
+        <label for="edit-parent-phone">Số điện thoại:</label>
+        <input type="text" id="edit-parent-phone-input" placeholder="Số điện thoại" />
+        
+        <label for="edit-parent-email">Email:</label>
+        <input type="email" id="edit-parent-email-input" placeholder="Email" required />
+        
+        <button onclick="saveParentChanges()">Lưu thay đổi</button>
+    </div>
+
+    <script>
+        let editParentIndex = null;
+
+        function toggleCustomRoleInput(action) {
+            const roleSelectId = action === 'add' ? 'parent-role' : 'edit-parent-role';
+            const customRoleInputId = action === 'add' ? 'custom-role-input-add' : 'custom-role-input-edit';
+            const role = document.getElementById(roleSelectId).value;
+            const customRoleInput = document.getElementById(customRoleInputId);
+            if (role === 'Khác') {
+                customRoleInput.style.display = 'block';
+            } else {
+                customRoleInput.style.display = 'none';
+                customRoleInput.value = ''; // Clear custom role input
+            }
+        }
+
+        function showAddParentDialog() {
+            document.getElementById('add-parent-dialog').style.display = 'block';
+        }
+
+        function closeAddParentDialog() {
+            document.getElementById('add-parent-dialog').style.display = 'none';
+        }
+
+        function addParent() {
+            const roleSelect = document.getElementById('parent-role');
+            const role = roleSelect.value === 'Khác' ? document.getElementById('custom-role-input-add').value : roleSelect.value;
+            const name = document.getElementById('parent-name-input').value;
+            const phone = document.getElementById('parent-phone-input').value;
+            const email = document.getElementById('parent-email-input').value;
+
+            if ((email || phone) && name && role) {
+                const parentDiv = document.createElement('div');
+                parentDiv.className = 'parent-info';
+                parentDiv.innerHTML = `
+                    <h4>${role}: ${name} 
+                        <button onclick="removeParent(this)">Xóa</button>
+                        <button onclick="showEditParentDialog(this)">Chỉnh sửa</button>
+                    </h4>
+                    ${phone ? `<p>Số điện thoại: ${phone}</p>` : ''}
+                    ${email ? `<p>Email: ${email}</p>` : ''}
+                `;
+                document.getElementById('parent-list').appendChild(parentDiv);
+                closeAddParentDialog();
+                
+                // Reset fields
+                roleSelect.value = 'Cha';
+                document.getElementById('custom-role-input-add').style.display = 'none';
+                document.getElementById('parent-name-input').value = '';
+                document.getElementById('parent-phone-input').value = '';
+                document.getElementById('parent-email-input').value = '';
+            } else {
+                alert('Vui lòng nhập đầy đủ thông tin và ít nhất số điện thoại hoặc email.');
+            }
+        }
+
+        function removeParent(button) {
+            const parentDiv = button.parentElement.parentElement;
+            document.getElementById('parent-list').removeChild(parentDiv);
+        }
+
+        function showEditParentDialog(button) {
+            const parentDiv = button.parentElement.parentElement;
+            editParentIndex = Array.from(document.getElementById('parent-list').children).indexOf(parentDiv);
+
+            const roleAndName = parentDiv.querySelector('h4').innerText.split(": ");
+            const role = roleAndName[0];
+            const name = roleAndName[1].split(" ")[0];
+
+            const phoneElem = parentDiv.querySelector('p:nth-of-type(1)');
+            const phone = phoneElem ? phoneElem.innerText.split(': ')[1] : '';
+
+            const emailElem = parentDiv.querySelector('p:nth-of-type(2)');
+            const email = emailElem ? emailElem.innerText.split(': ')[1] : '';
+
+            const editRoleSelect = document.getElementById('edit-parent-role');
+            editRoleSelect.value = role;
+            toggleCustomRoleInput('edit');
+            if (role === 'Khác') {
+                document.getElementById('custom-role-input-edit').value = role.replace("Khác: ", "");
+            }
+            
+            document.getElementById('edit-parent-name-input').value = name;
+            document.getElementById('edit-parent-phone-input').value = phone;
+            document.getElementById('edit-parent-email-input').value = email;
+            document.getElementById('edit-parent-dialog').style.display = 'block';
+        }
+
+        function closeEditParentDialog() {
+            document.getElementById('edit-parent-dialog').style.display = 'none';
+        }
+
+        function saveParentChanges() {
+            if (editParentIndex !== null) {
+                const roleSelect = document.getElementById('edit-parent-role');
+                const role = roleSelect.value === 'Khác' ? document.getElementById('custom-role-input-edit').value : roleSelect.value;
+                const name = document.getElementById('edit-parent-name-input').value;
+                const phone = document.getElementById('edit-parent-phone-input').value;
+                const email = document.getElementById('edit-parent-email-input').value;
+
+                if ((email || phone) && name && role) {
+                    const parentList = document.getElementById('parent-list');
+                    const parentDiv = parentList.children[editParentIndex];
+                    parentDiv.innerHTML = `
+                        <h4>${role}: ${name} 
+                            <button onclick="removeParent(this)">Xóa</button>
+                            <button onclick="showEditParentDialog(this)">Chỉnh sửa</button>
+                        </h4>
+                        ${phone ? `<p>Số điện thoại: ${phone}</p>` : ''}
+                        ${email ? `<p>Email: ${email}</p>` : ''}
+                    `;
+                    closeEditParentDialog();
+                } else {
+                    alert('Vui lòng nhập đầy đủ thông tin và ít nhất số điện thoại hoặc email.');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

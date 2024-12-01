@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý hồ sơ Gia sư</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        .profile-section {
+            margin: 20px 0;
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"], input[type="email"], input[type="date"], input[type="month"], input[type="file"], select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .dialog {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            background-color: white;
+            border: 1px solid #ccc;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .dialog select, .dialog input, .dialog textarea {
+            width: 100%;
+        }
+
+        .dialog-close {
+            float: right;
+            cursor: pointer;
+            color: red;
+            font-weight: bold;
+        }
+
+        .schedule-table {
+            width: 100%;
+            overflow-x: auto;
+            border-collapse: collapse;
+        }
+
+        .schedule-table th, .schedule-table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+            background-color: #ffffff; /* Set default background to white */
+        }
+
+        .online-cell {
+            color: green;
+        }
+
+        .offline-cell {
+            color: blue;
+        }
+
+        .schedule-info, .certificate-info, .experience-info, .subject-info, .service-info {
+            font-size: 12px;
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+
+        .experience-table {
+            width: 100%;
+            margin-top: 10px;
+            border-collapse: collapse;
+        }
+
+        .experience-table td {
+            padding: 10px;
+            vertical-align: top;
+        }
+
+        .experience-table th {
+            display: none; /* Removes table headers */
+        }
+
+        .experience-time {
+            width: 20%;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Quản lý hồ sơ Gia sư</h2>
+
+        <!-- Basic Information Section -->
+        <div class="profile-section" id="basic-info">
+            <h3>Nhóm thông tin cơ bản</h3>
+            <label for="full-name">Họ và tên:</label>
+            <input type="text" id="full-name" value="Nguyễn Văn A">
+            
+            <label for="email">Email:</label>
+            <input type="email" id="email" value="nguyenvana@example.com">
+            
+            <label for="phone">Số điện thoại:</label>
+            <input type="text" id="phone" value="0123456789">
+            
+            <label for="dob">Ngày sinh:</label>
+            <input type="date" id="dob" value="2000-01-01">
+            
+            <label for="avatar">Avatar:</label>
+            <input type="file" id="avatar" accept="image/*">
+        </div>
+
+        <!-- Introductions and Contact Section -->
+        <div class="profile-section" id="personal-introduction">
+            <h3>Thông tin Giới thiệu bản thân</h3>
+            <label for="short-intro">Giới thiệu ngắn:</label>
+            <textarea id="short-intro" rows="3" placeholder="Giới thiệu ngắn..."></textarea>
+            
+            <label for="detailed-intro">Giới thiệu chi tiết:</label>
+            <textarea id="detailed-intro" rows="6" placeholder="Giới thiệu chi tiết..."></textarea>
+            
+            <label for="intro-video">Video giới thiệu:</label>
+            <input type="file" id="intro-video" accept="video/*">
+        </div>
+
+        <!-- Qualifications Section  -->
+        <div class="profile-section" id="qualifications-certificates">
+            <h3>Thông tin Bằng cấp chứng chỉ</h3>
+            <button onclick="showCertificateDialog()">Thêm chứng chỉ</button>
+            <div id="certificates-list"></div>
+        </div>
+
+        <!-- Programs and Subjects Section -->
+        <div class="profile-section" id="programs-subjects">
+            <h3>Thông tin Chương trình và môn học</h3>
+            <button onclick="showProgramDialog()">Thêm chương trình học</button>
+            <div id="programs-list"></div>
+        </div>
+
+        <!-- Teaching Schedule Section -->
+        <div class="profile-section" id="teaching-schedule">
+            <h3>Lịch dạy và phương thức</h3>
+            <div class="schedule-table-wrapper">
+                <table class="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>Giờ/Thứ</th>
+                            <th>Thứ 2</th>
+                            <th>Thứ 3</th>
+                            <th>Thứ 4</th>
+                            <th>Thứ 5</th>
+                            <th>Thứ 6</th>
+                            <th>Thứ 7</th>
+                            <th>Chủ Nhật</th>
+                        </tr>
+                    </thead>
+                    <tbody id="schedule-body">
+                        <!-- Dynamically add schedule rows -->
+                    </tbody>
+                </table>
+                <button onclick="loadInitialSchedule()">Xem thêm giờ</button>
+            </div>
+        </div>
+
+        <!-- Work Experience Section -->
+        <div class="profile-section" id="work-experience">
+            <h3>Kinh nghiệm làm việc</h3>
+            <button onclick="showExperienceDialog()">Thêm kinh nghiệm làm việc</button>
+            <table class="experience-table">
+                <tbody id="experience-list"></tbody>
+            </table>
+        </div>
+
+        <!-- Additional Services Section -->
+        <div class="profile-section" id="additional-services">
+            <h3>Dịch vụ bổ sung</h3>
+            <button onclick="showServiceDialog()">Thêm dịch vụ</button>
+            <div id="services-list"></div>
+        </div>
+    </div>
+
+    <!-- Certificate Dialog -->
+    <div class="dialog" id="certificate-dialog">
+        <span class="dialog-close" onclick="closeCertificateDialog()">X</span>
+        <p>Thêm Bằng cấp chứng chỉ</p>
+        <input type="text" id="certificate-name-input" placeholder="Tên bằng cấp" />
+        <input type="date" id="certificate-date-input" placeholder="Thời gian nhận" />
+        <input type="text" id="certificate-grade-input" placeholder="Điểm" />
+        <button onclick="saveCertificate()">Lưu</button>
+    </div>
+
+    <!-- Program Dialog -->
+    <div class="dialog" id="program-dialog">
+        <span class="dialog-close" onclick="closeProgramDialog()">X</span>
+        <p>Chọn loại chương trình học:</p>
+        <button onclick="showSubjectDialog()">Môn học phổ thông</button>
+        <button onclick="showCertificateExamDialog()">Luyện thi chứng chỉ</button>
+    </div>
+
+    <!-- Subject Dialog -->
+    <div class="dialog" id="subject-dialog">
+        <span class="dialog-close" onclick="closeSubjectDialog()">X</span>
+        <p>Thông tin môn học phổ thông</p>
+        <select id="subject-dropdown">
+            <option>Toán</option>
+            <option>Văn</option>
+            <option>Lý</option>
+            <!-- Add more default subjects here -->
+        </select>
+        <select id="grade-dropdown">
+            <option>Khối 10</option>
+            <option>Khối 11</option>
+            <option>Khối 12</option>
+        </select>
+        <select id="level-dropdown">
+            <option>Mất gốc</option>
+            <option>Cơ bản</option>
+            <option>Nâng cao</option>
+            <option>Khác</option>
+        </select>
+        <button onclick="saveSubject()">Lưu</button>
+    </div>
+
+    <!-- Certificate Exam Dialog -->
+    <div class="dialog" id="certificate-exam-dialog">
+        <span class="dialog-close" onclick="closeCertificateExamDialog()">X</span>
+        <p>Chọn loại chứng chỉ:</p>
+        <select id="certificate-type-dropdown">
+            <option>Ngôn ngữ</option>
+            <option>Nghề nghiệp</option>
+            <option>Khác</option>
+        </select>
+        <select id="certificate-name-dropdown"></select>
+        <select id="certificate-level-dropdown"></select>
+        <button onclick="saveCertificateProgram()">Lưu</button>
+    </div>
+
+    <!-- Work Experience Dialog -->
+    <div class="dialog" id="experience-dialog">
+        <span class="dialog-close" onclick="closeExperienceDialog()">X</span>
+        <p>Thêm Kinh nghiệm làm việc</p>
+        <input type="text" id="company-input" placeholder="Công ty" />
+        <input type="month" id="from-year-input" placeholder="Từ tháng/năm" />
+        <input type="month" id="to-year-input" placeholder="Đến tháng/năm" />
+        <input type="text" id="position-input" placeholder="Chức vụ" />
+        <button onclick="saveExperience()">Lưu</button>
+    </div>
+
+    <!-- Additional Service Dialog -->
+    <div class="dialog" id="service-dialog">
+        <span class="dialog-close" onclick="closeServiceDialog()">X</span>
+        <p>Thêm Dịch vụ bổ sung</p>
+        <select id="service-type-dropdown">
+            <option>Tư vấn du học</option>
+            <option>Tư vấn học đường</option>
+            <option>Khác</option>
+        </select>
+        <textarea id="service-desc-input" placeholder="Mô tả dịch vụ" rows="3"></textarea>
+        <button onclick="saveService()">Lưu</button>
+    </div>
+
+    <!-- Schedule Dialog -->
+    <div class="dialog" id="schedule-dialog">
+        <span class="dialog-close" onclick="closeScheduleDialog()">X</span>
+        <p>Thiết lập lịch dạy</p>
+        <select id="schedule-subject">
+            <option>Toán</option>
+            <option>Văn</option>
+            <option>Lý</option>
+            <!-- Based on enrolled programs and subjects -->
+        </select>
+        <select id="teaching-method" onchange="toggleLocationDropdowns(this.value)">
+            <option value="Online">Online</option>
+            <option value="Offline">Offline</option>
+        </select>
+        <!-- Optional dropdowns for Offline teaching method -->
+        <div id="location-fields" style="display: none;">
+            <select id="city-dropdown">
+                <option>Hà Nội</option>
+                <option>TP Hồ Chí Minh</option>
+                <!-- More options here -->
+            </select>
+            <select id="district-dropdown">
+                <option>Quận 1</option>
+                <option>Quận 2</option>
+                <!-- More options here -->
+            </select>
+        </div>
+        <button onclick="saveSchedule()">Lưu</button>
+    </div>
+
+    <script>
+        function showCertificateDialog() {
+            document.getElementById('certificate-dialog').style.display = 'block';
+        }
+
+        function closeCertificateDialog() {
+            document.getElementById('certificate-dialog').style.display = 'none';
+        }
+
+        function showExperienceDialog() {
+            document.getElementById('experience-dialog').style.display = 'block';
+        }
+
+        function closeExperienceDialog() {
+            document.getElementById('experience-dialog').style.display = 'none';
+        }
+
+        function showProgramDialog() {
+            document.getElementById('program-dialog').style.display = 'block';
+        }
+
+        function closeProgramDialog() {
+            document.getElementById('program-dialog').style.display = 'none';
+        }
+
+        function showSubjectDialog() {
+            closeProgramDialog();
+            document.getElementById('subject-dialog').style.display = 'block';
+        }
+
+        function closeSubjectDialog() {
+            document.getElementById('subject-dialog').style.display = 'none';
+        }
+
+        function showCertificateExamDialog() {
+            closeProgramDialog();
+            updateCertificateNameOptions();
+            document.getElementById('certificate-exam-dialog').style.display = 'block';
+        }
+
+        function closeCertificateExamDialog() {
+            document.getElementById('certificate-exam-dialog').style.display = 'none';
+        }
+
+        function showServiceDialog() {
+            document.getElementById('service-dialog').style.display = 'block';
+        }
+
+        function closeServiceDialog() {
+            document.getElementById('service-dialog').style.display = 'none';
+        }
+
+        function updateCertificateNameOptions() {
+            const type = document.getElementById('certificate-type-dropdown').value;
+            const nameDropdown = document.getElementById('certificate-name-dropdown');
+            const levelDropdown = document.getElementById('certificate-level-dropdown');
+            nameDropdown.innerHTML = '';
+            levelDropdown.innerHTML = '';
+            if (type === 'Ngôn ngữ') {
+                nameDropdown.innerHTML = '<option>IELTS</option><option>TOEFL</option>';
+                levelDropdown.innerHTML = '<option>4.0-5.5</option><option>6.0-7.0</option><option>7.5-9.0</option>';
+            } else if (type === 'Nghề nghiệp') {
+                nameDropdown.innerHTML = '<option>SAT</option><option>PMP</option>';
+                levelDropdown.innerHTML = '<option>Cơ bản</option><option>Nâng cao</option>';
+            } else {
+                nameDropdown.innerHTML = '<option>Khác</option>';
+                levelDropdown.innerHTML = '<option>Cơ bản</option><option>Nâng cao</option>';
+            }
+        }
+
+        function saveCertificate() {
+            const name = document.getElementById('certificate-name-input').value;
+            const date = document.getElementById('certificate-date-input').value;
+            const grade = document.getElementById('certificate-grade-input').value;
+            if (name && date && grade) {
+                const list = document.getElementById('certificates-list');
+                const div = document.createElement('div');
+                div.className = 'certificate-info';
+                div.innerHTML = `<strong>${name}</strong><br>Ngày nhận: ${date}<br>Điểm: ${grade}`;
+                list.appendChild(div);
+            }
+            closeCertificateDialog();
+        }
+
+        function saveSubject() {
+            const subject = document.getElementById('subject-dropdown').value;
+            const grade = document.getElementById('grade-dropdown').value;
+            const level = document.getElementById('level-dropdown').value;
+            const list = document.getElementById('programs-list');
+            const div = document.createElement('div');
+            div.className = 'subject-info';
+            div.innerHTML = `<strong>${subject}</strong><br>Khối: ${grade}<br>Trình độ: ${level}`;
+            list.appendChild(div);
+            closeSubjectDialog();
+        }
+
+        function saveCertificateProgram() {
+            const type = document.getElementById('certificate-type-dropdown').value;
+            const name = document.getElementById('certificate-name-dropdown').value;
+            const level = document.getElementById('certificate-level-dropdown').value;
+            const list = document.getElementById('programs-list');
+            const div = document.createElement('div');
+            div.className = 'subject-info';
+            div.innerHTML = `<strong>Luyện thi ${name}</strong><br>Loại: ${type}<br>Trình độ: ${level}`;
+            list.appendChild(div);
+            closeCertificateExamDialog();
+        }
+
+        function saveExperience() {
+            const company = document.getElementById('company-input').value;
+            const fromYear = document.getElementById('from-year-input').value;
+            const toYear = document.getElementById('to-year-input').value;
+            const position = document.getElementById('position-input').value;
+            if (company && fromYear && toYear && position) {
+                const list = document.getElementById('experience-list');
+                const tr = document.createElement('tr');
+                
+                tr.innerHTML = `
+                    <td class="experience-time">${fromYear} - ${toYear}</td>
+                    <td>
+                        <strong>${company}</strong><br>${position}
+                    </td>
+                `;
+                list.appendChild(tr);
+            }
+            closeExperienceDialog();
+        }
+
+        function saveService() {
+            const type = document.getElementById('service-type-dropdown').value;
+            const desc = document.getElementById('service-desc-input').value;
+            if (type && desc) {
+                const list = document.getElementById('services-list');
+                const div = document.createElement('div');
+                div.className = 'service-info';
+                div.innerHTML = `<strong>${type}</strong><br>${desc}`;
+                list.appendChild(div);
+            }
+            closeServiceDialog();
+        }
+
+        function loadInitialSchedule() {
+            const scheduleBody = document.getElementById('schedule-body');
+
+            for (let hour = 8; hour < 18; hour++) {
+                const row = document.createElement('tr');
+                const timeCell = `<td>${hour}:00</td>`;
+                row.innerHTML = timeCell + '<td></td>'.repeat(7);
+                scheduleBody.appendChild(row);
+            }
+        }
+
+        let selectedCell = null;
+        document.getElementById('schedule-body').addEventListener('click', function(event) {
+            if (event.target.tagName.toLowerCase() === 'td' && event.target.cellIndex > 0) {
+                selectedCell = event.target;
+                document.getElementById('schedule-dialog').style.display = 'block';
+            }
+        });
+
+        function closeScheduleDialog() {
+            selectedCell = null;
+            document.getElementById('schedule-dialog').style.display = 'none';
+        }
+
+        function saveSchedule() {
+            const method = document.getElementById('teaching-method').value;
+            const subject = document.getElementById('schedule-subject').value;
+            if (selectedCell) {
+                selectedCell.innerHTML = `<div class="schedule-info">${subject}<br>${method}</div>`;
+                selectedCell.className = method.toLowerCase() === 'online' ? 'online-cell' : 'offline-cell';
+                closeScheduleDialog();
+            }
+        }
+
+        function toggleLocationDropdowns(value) {
+            const locationFields = document.getElementById('location-fields');
+            locationFields.style.display = (value === 'Offline') ? 'block' : 'none';
+        }
+
+        window.onload = loadInitialSchedule;
+    </script>
+</body>
+</html>
