@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Danh sách User</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        .filter-section {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"], select {
+            padding: 8px;
+            margin-right: 10px;
+            box-sizing: border-box;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        .icon-btn {
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .icon {
+            width: 16px;
+            height: 16px;
+            display: inline-block;
+        }
+
+        .popup {
+            position: absolute;
+            display: none;
+            padding: 10px;
+            background-color: white;
+            border: 1px solid #ccc;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Quản lý Danh sách User</h2>
+
+        <!-- Filter Section -->
+        <div class="filter-section" id="filter">
+            <label for="role-filter">Role: </label>
+            <select id="role-filter">
+                <option value="">Tất cả</option>
+                <option value="Admin">Admin</option>
+                <option value="Phụ huynh">Phụ huynh</option>
+                <option value="Học sinh">Học sinh</option>
+                <option value="Gia sư">Gia sư</option>
+            </select>
+
+            <label for="name-filter">Tên: </label>
+            <input type="text" id="name-filter" placeholder="Tên người dùng">
+
+            <label for="phone-filter">Số điện thoại: </label>
+            <input type="text" id="phone-filter" placeholder="Số điện thoại">
+
+            <label for="email-filter">Email: </label>
+            <input type="text" id="email-filter" placeholder="Email">
+
+            <span id="result-count">Kết quả tìm kiếm: 5</span>
+        </div>
+
+        <!-- User List Table -->
+        <table>
+            <thead>
+                <tr>
+                    <th>ID User</th>
+                    <th>Tên Đăng Nhập</th>
+                    <th>Vai Trò</th>
+                    <th>Email</th>
+                    <th>SĐT</th>
+                    <th>Trạng Thái</th>
+                    <th>Hành Động</th>
+                </tr>
+            </thead>
+            <tbody id="user-list">
+                <!-- Sample users -->
+                <tr>
+                    <td>1</td>
+                    <td>admin</td>
+                    <td>Admin</td>
+                    <td>admin@example.com</td>
+                    <td>-</td>
+                    <td>Active</td>
+                    <td>
+                        <span class="icon-btn" onclick="viewDetails(1)">👁️</span>
+                        <span class="icon-btn" onclick="toggleEditPopup(this, 1)">✏️</span>
+                        <span class="icon-btn" onclick="deleteUser(1)">🗑️</span>
+                        <div class="popup" id="edit-popup-1">
+                            <label for="status">Trạng thái: </label>
+                            <select id="status-1">
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                            <button onclick="saveStatus(1)">Lưu</button>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>parent_user</td>
+                    <td>Phụ huynh</td>
+                    <td>parent@example.com</td>
+                    <td>0912345678</td>
+                    <td>Active</td>
+                    <td>
+                        <span class="icon-btn" onclick="viewDetails(2)">👁️</span>
+                        <span class="icon-btn" onclick="toggleEditPopup(this, 2)">✏️</span>
+                        <span class="icon-btn" onclick="deleteUser(2)">🗑️</span>
+                        <div class="popup" id="edit-popup-2">
+                            <label for="status">Trạng thái: </label>
+                            <select id="status-2">
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                            <button onclick="saveStatus(2)">Lưu</button>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>student_user</td>
+                    <td>Học sinh</td>
+                    <td>student@example.com</td>
+                    <td>0987654321</td>
+                    <td>Inactive</td>
+                    <td>
+                        <span class="icon-btn" onclick="viewDetails(3)">👁️</span>
+                        <span class="icon-btn" onclick="toggleEditPopup(this, 3)">✏️</span>
+                        <span class="icon-btn" onclick="deleteUser(3)">🗑️</span>
+                        <div class="popup" id="edit-popup-3">
+                            <label for="status">Trạng thái: </label>
+                            <select id="status-3">
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                            <button onclick="saveStatus(3)">Lưu</button>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>tutor_user</td>
+                    <td>Gia sư</td>
+                    <td>tutor@example.com</td>
+                    <td>0123123123</td>
+                    <td>Active</td>
+                    <td>
+                        <span class="icon-btn" onclick="viewDetails(4)">👁️</span>
+                        <span class="icon-btn" onclick="toggleEditPopup(this, 4)">✏️</span>
+                        <span class="icon-btn" onclick="deleteUser(4)">🗑️</span>
+                        <div class="popup" id="edit-popup-4">
+                            <label for="status">Trạng thái: </label>
+                            <select id="status-4">
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                            <button onclick="saveStatus(4)">Lưu</button>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>support_user</td>
+                    <td>Hỗ trợ</td>
+                    <td>support@example.com</td>
+                    <td>0707070707</td>
+                    <td>Inactive</td>
+                    <td>
+                        <span class="icon-btn" onclick="viewDetails(5)">👁️</span>
+                        <span class="icon-btn" onclick="toggleEditPopup(this, 5)">✏️</span>
+                        <span class="icon-btn" onclick="deleteUser(5)">🗑️</span>
+                        <div class="popup" id="edit-popup-5">
+                            <label for="status">Trạng thái: </label>
+                            <select id="status-5">
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                            <button onclick="saveStatus(5)">Lưu</button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function toggleEditPopup(button, userId) {
+            const popup = document.getElementById(`edit-popup-${userId}`);
+            if (popup.style.display === 'block') {
+                popup.style.display = 'none';
+            } else {
+                // Position popup
+                const rect = button.getBoundingClientRect();
+                popup.style.left = `${rect.left}px`;
+                popup.style.top = `${rect.bottom + window.scrollY}px`;
+                popup.style.display = 'block';
+            }
+        }
+
+        function saveStatus(userId) {
+            const status = document.getElementById(`status-${userId}`).value;
+            const userRow = document.querySelector(`#user-list tr:nth-child(${userId}) td:nth-child(6)`);
+            userRow.innerText = status;
+            closePopups();
+        }
+
+        function viewDetails(userId) {
+            // Redirect to profile detail page based on user role
+            alert(`Xem chi tiết user với ID: ${userId}`);
+        }
+
+        function deleteUser(userId) {
+            const confirmed = confirm('Bạn có chắc muốn xóa người dùng này không?');
+            if (confirmed) {
+                const userRow = document.querySelector(`#user-list tr:nth-child(${userId})`);
+                userRow.parentElement.removeChild(userRow);
+            }
+        }
+
+        function closePopups() {
+            document.querySelectorAll('.popup').forEach(popup => popup.style.display = 'none');
+        }
+
+        document.body.addEventListener('click', function(event) {
+            if (!event.target.closest('.icon-btn')) {
+                closePopups();
+            }
+        });
+    </script>
+</body>
+</html>
