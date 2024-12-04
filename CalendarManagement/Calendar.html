@@ -1,0 +1,288 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý lịch học</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+        .day {
+            border: 1px solid #ccc;
+            padding: 10px;
+            position: relative;
+        }
+        .day-header {
+            font-weight: bold;
+        }
+        .event {
+            font-size: 12px;
+            margin-top: 5px;
+            padding: 2px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .event.completed { color: green; }
+        .event.confirm { color: blue; }
+        .event.proposed-change { color: yellow; }
+        .event.proposed-cancel { color: orange; }
+        .event.not-completed { color: red; }
+        .popup {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 10px;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            width: 250px;
+        }
+        .popup.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Quản lý lịch học</h1>
+    <div>
+        <button onclick="prevMonth()">Tháng trước</button>
+        <button onclick="nextMonth()">Tháng sau</button>
+        <select id="viewMode" onchange="changeViewMode()">
+            <option value="month">Xem theo tháng</option>
+            <option value="week">Xem theo tuần</option>
+        </select>
+        <select id="statusFilter" onchange="filterEvents()">
+            <option value="all">Tất cả</option>
+            <option value="completed">Hoàn thành</option>
+            <option value="confirm">Xác nhận</option>
+            <option value="proposed-change">Đề nghị chuyển</option>
+            <option value="proposed-cancel">Đề nghị hủy</option>
+            <option value="not-completed">Chưa hoàn thành</option>
+        </select>
+    </div>
+    <div class="calendar" id="calendar">
+        <!-- Calendar days will be populated here -->
+    </div>
+    <script>
+        const events = [
+            { date: '2023-10-05', time: '08:00-09:00 AM', status: 'completed', subject: 'Toán', student: 'John', tutor: 'Mr. A' },
+            { date: '2023-10-08', time: '10:00-11:00 AM', status: 'completed', subject: 'Khoa học', student: 'Alice', tutor: 'Mr. B' },
+            { date: '2023-10-12', time: '01:00-02:00 PM', status: 'confirm', subject: 'Tiếng Anh', student: 'Bob', tutor: 'Mr. C' },
+            { date: '2023-10-15', time: '03:00-04:00 PM', status: 'proposed-change', subject: 'Lịch sử', student: 'Eve', tutor: 'Mr. D' },
+            { date: '2023-10-18', time: '09:00-10:00 AM', status: 'proposed-cancel', subject: 'Lịch sử', student: 'Eve', tutor: 'Mr. D' },
+            { date: '2023-10-20', time: '11:00-12:00 PM', status: 'not-completed', subject: 'Hóa học', student: 'Dave', tutor: 'Mr. F' },
+            { date: '2023-10-22', time: '02:00-03:00 PM', status: 'proposed-change', subject: 'Sinh học', student: 'Charlie', tutor: 'Mr. E' },
+            { date: '2023-10-25', time: '02:00-03:00 PM', status: 'proposed-cancel', subject: 'Sinh học', student: 'Charlie', tutor: 'Mr. E' }
+        ];
+
+        let selectedEvent = null;
+
+        function renderCalendar() {
+            const calendar = document.getElementById('calendar');
+            calendar.innerHTML = '';  // Clear previous content
+            const daysInMonth = 31;  // Assume 31 days for simplicity
+            const selectedStatus = document.getElementById('statusFilter').value;
+
+            for (let i = 1; i <= daysInMonth; i++) {
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'day';
+                dayDiv.innerHTML = `<div class="day-header">Ngày ${i}</div>`;
+                const dateStr = `2023-10-${i.toString().padStart(2, '0')}`;
+                const dayEvents = events.filter(event => event.date === dateStr && (selectedStatus === 'all' || event.status === selectedStatus));
+                dayEvents.forEach(event => {
+                    const eventDiv = document.createElement('div');
+                    eventDiv.className = `event ${event.status}`;
+                    eventDiv.innerText = `${event.time}: ${event.subject} - ${event.student}`;
+                    eventDiv.onclick = () => showPopup(event, eventDiv);
+                    dayDiv.appendChild(eventDiv);
+                });
+                calendar.appendChild(dayDiv);
+            }
+        }
+        function filterEvents() {
+            renderCalendar();
+        }
+
+        function showPopup(event, element) {
+            selectedEvent = event;
+            const popup = document.createElement('div');
+            popup.className = 'popup active';
+            popup.innerHTML = `
+                <div><strong>${event.subject}</strong></div>
+                <div>Học sinh: ${event.student}</div>
+                <div>Gia sư: ${event.tutor}</div>
+                <div>Trạng thái: ${event.status}</div>
+                <button onclick="closePopup(this)">Đóng</button>
+                ${event.status === 'confirm' ? `
+                <button onclick="completeEvent()">Hoàn thành</button>
+                <button onclick="proposeChange()">Đề nghị chuyển lịch</button>
+                ` : ''}
+                ${event.status === 'proposed-change' ? `
+                <button onclick="confirmChangeRequest()">Xác nhận</button>
+                <button onclick="rejectChangeRequest()">Từ chối</button>
+                ` : ''}
+            `;
+            element.appendChild(popup);
+        }
+
+        function completeEvent() {
+            selectedEvent.status = 'completed';
+            renderCalendar();
+            closePopup(document.querySelector('.popup button'));
+        }
+
+        function approveEvent() {
+            selectedEvent.status = 'approved';
+            renderCalendar();
+            closePopup(document.querySelector('.popup button'));
+        }
+
+        function confirmChangeRequest() {
+            const proposedCancelEvent = events.find(e => e.status === 'proposed-cancel' && e.student === selectedEvent.student && e.subject === selectedEvent.subject);
+
+            if (proposedCancelEvent) {
+                const index = events.indexOf(proposedCancelEvent);
+                if (index > -1) {
+                    events.splice(index, 1);
+                }
+            }
+
+            selectedEvent.status = 'confirm';
+            renderCalendar();
+            closePopup(document.querySelector('.popup button'));
+        }
+
+        function rejectChangeRequest() {
+            const proposedCancelEvent = events.find(e => e.status === 'proposed-cancel' && e.student === selectedEvent.student && e.subject === selectedEvent.subject);
+
+            if (proposedCancelEvent) {
+                proposedCancelEvent.status = 'confirm';
+            }
+
+            const index = events.indexOf(selectedEvent);
+            if (index > -1) {
+                events.splice(index, 1);
+            }
+
+            renderCalendar();
+            closePopup(document.querySelector('.popup button'));
+        }
+
+        function closePopup(button) {
+            const popup = button.parentElement;
+            popup.remove();
+        }
+
+        function proposeChange() {
+            closePopup(document.querySelector('.popup button'));
+            document.querySelectorAll('.event').forEach(event => {
+                event.style.color = 'gray';
+            });
+            selectedEvent.status = 'proposed-cancel';
+            renderCalendar();
+            document.querySelectorAll('.day').forEach(day => {
+                day.onclick = (e) => selectNewDate(e.currentTarget);
+            });
+        }
+
+                function selectNewDate(dayElement) {
+            if (!dayElement.querySelector('.event')) { // Ensure the day is empty
+                const dayHeader = dayElement.querySelector('.day-header').innerText;
+                const newDate = dayHeader.split(' ')[1];
+                const popup = document.createElement('div');
+                popup.className = 'popup active';
+                popup.style.top = '0'; // Adjust position inside the day cell
+                popup.style.left = '0';
+                popup.innerHTML = `
+                    <div>Đề nghị chuyển lịch học đến ngày ${newDate}</div>
+                    <div>
+                        Nhập giờ bắt đầu: 
+                        <input type="time" id="newStartTime" style="width: 100%;" value="09:00">
+                    </div>
+                    <div>
+                        Nhập thời lượng buổi học (giờ): 
+                        <input type="number" id="sessionDuration" min="1" style="width: 50px;" value="1"> giờ
+                    </div>
+                    <button onclick="confirmChange('${newDate}', this)">Xác nhận</button>
+                    <button onclick="closePopup(this)">Hủy</button>
+                `;
+                dayElement.appendChild(popup);
+            }
+        }
+
+        function confirmChange(newDate, button) {
+            const newStartTime = document.getElementById('newStartTime').value;
+            const sessionDuration = document.getElementById('sessionDuration').value;
+
+            // Kiểm tra giá trị đã nhập
+            console.log('Giờ bắt đầu:', newStartTime);
+            console.log('Thời lượng:', sessionDuration);
+
+            if (newStartTime && sessionDuration) {
+                // Hiển thị giá trị đã nhập trên màn hình
+                alert(`Giờ bắt đầu: ${newStartTime}, Thời lượng: ${sessionDuration} giờ`);
+
+                // Lưu giá trị vào sự kiện lịch
+                const [startHour, startMinute] = newStartTime.split(':');
+                let endHour = parseInt(startHour) + parseInt(sessionDuration);
+                let endPeriod = 'AM';
+
+                if (endHour >= 12) {
+                    endPeriod = 'PM';
+                    if (endHour > 12) {
+                        endHour -= 12;
+                    }
+                }
+                const newEndTime = `${endHour.toString().padStart(2, '0')}:${startMinute} ${endPeriod}`;
+                const newTime = `${newStartTime} - ${newEndTime}`;
+                
+                // Tạo sự kiện mới với trạng thái 'proposed-change'
+                const newEvent = {
+                    date: `2023-10-${newDate.padStart(2, '0')}`,
+                    time: newTime,
+                    status: 'proposed-change',
+                    subject: selectedEvent.subject,
+                    student: selectedEvent.student,
+                    tutor: selectedEvent.tutor
+                };
+                events.push(newEvent);
+                
+                renderCalendar();
+                closePopup(button);
+            } else {
+                alert('Vui lòng nhập đầy đủ giờ bắt đầu và thời lượng buổi học trước khi xác nhận.');
+            }
+        }
+
+        function confirmParticipation() {
+            selectedEvent.status = 'approved';
+            renderCalendar();
+            closePopup(document.querySelector('.popup button'));
+        }
+
+        function prevMonth() {
+            // Logic to show the previous month's calendar
+        }
+
+        function nextMonth() {
+            // Logic to show the next month's calendar
+        }
+
+        function changeViewMode() {
+            const mode = document.getElementById('viewMode').value;
+            // Logic to switch between month and week view
+        }
+
+        // Initialize calendar
+        renderCalendar();
+    </script>
+</body>
+</html>
